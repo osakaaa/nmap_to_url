@@ -54,13 +54,16 @@ def parse_nmap(_content):
 
 if __name__ == "__main__":
     scan = ""
+    result_type = "hostName"
     with open(sys.argv[1],'r') as f:
         scan = f.read()
+    if len(sys.argv) >= 2 and sys.argv[2] == "ip":
+        result_type = "address"
     result = parse_nmap(scan)
     for host in result:
         for port in host["ports"]:
             proto = port["portService"]
             if port["portTunnel"]:
                 proto = proto + "s"
-            url = proto + "://" + host["hostName"] + ":" + port["portNumber"]
+            url = proto + "://" + host[result_type] + ":" + port["portNumber"]
             print(url)
